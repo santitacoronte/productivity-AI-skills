@@ -1,0 +1,505 @@
+{
+  "metadata": {
+    "skill_name": "ai-explain-me",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "claude-opus-5-5",
+    "timestamp": "2026-11-04T10:57:15Z",
+    "evals_run": [
+      "booking-app-before-deploy",
+      "freelance-contract-before-signing",
+      "stripe-hubspot-workflow-for-manager"
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": "booking-app-before-deploy",
+      "eval_name": "booking-app-before-deploy",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 502.7,
+        "tokens": 149599,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "An HTML page is delivered with a diagram (SVG or equivalent) showing the app's main parts and how they connect",
+          "passed": true,
+          "evidence": "explainer.html contains an inline <svg> in section '3 \u00b7 The map' with boxes for Outside world, main.py, routes/bookings.py, routes/admin.py, notifications.py, availability.py, models.py/database.py, SendGrid and config.py, connected by labelled arrows ('/bookings', '/admin, no lock', 'mail it', 'free?', 'writes', 'reads all, deletes', 'sends', 'key', 'hours')."
+        },
+        {
+          "text": "Identifies that the email service password (SendGrid key) is written directly in config.py",
+          "passed": true,
+          "evidence": "Risk card 'A live email key is written in the code' (config.py line 9) and the House rules card: 'The login password is written right on the sheet... TODO move to env'. reply.md: 'a live SendGrid key sits in plain text in config.py'."
+        },
+        {
+          "text": "Identifies that the admin endpoints have no login and expose every patient's details",
+          "passed": true,
+          "evidence": "Risk 'The staff office is unlocked': 'anyone with the address can download every patient's name, email, phone and reason for visit' (routes/admin.py, verified). reply.md repeats it for /admin/bookings 'with no login'."
+        },
+        {
+          "text": "Identifies that anyone can cancel any booking just by knowing or guessing its number",
+          "passed": true,
+          "evidence": "Risk 'Anyone can cancel anyone's appointment': 'booking numbers are 1, 2, 3 and so on, and cancel asks for nothing else'. Trace step: the stranger sends 'cancel booking 1' and it works."
+        },
+        {
+          "text": "Notes that cancelled bookings still block their time slot",
+          "passed": true,
+          "evidence": "Risk 'Cancelled slots never open again' (availability.py line 20, verified) and the final trace step: a new 10:00 booking is refused with 'Slot already taken'. Matches is_slot_free not filtering cancelled."
+        },
+        {
+          "text": "Explains the app with one consistent everyday analogy mapped onto several parts",
+          "passed": true,
+          "evidence": "Section 1 sets a clinic reception desk analogy (entrance, patient counter, staff back office, receptionist/diary checker, filing cabinet, post room, house rules sheet). Each component card maps a file to a room and has a 'Where the analogy breaks' note."
+        },
+        {
+          "text": "Traces one concrete booking step by step through the parts",
+          "passed": true,
+          "evidence": "Section 5 'Amara books Dr Okafor for Friday at 10:00' runs through Staff back office, then Front door, Patient counter, Diary checker, Appointment book, Post room/SendGrid, with the actual email text and {\"id\": 1, \"status\": \"confirmed\"}, plus the follow-on double-book, admin leak, cancel and blocked-slot steps."
+        },
+        {
+          "text": "Lists at least 3 decisions made for the user (e.g. SQLite, SendGrid email, 30-minute slots, UTC time, open CORS)",
+          "passed": true,
+          "evidence": "Section 6 '15 choices you did not explicitly make' is a table that includes SQLite, SendGrid by SMTP, 30-minute slots, unused UTC/no time zone, CORS '*', no login, sequential IDs, each with an alternative, trade-off and how hard it is to change."
+        },
+        {
+          "text": "Includes a glossary that explains the technical terms used",
+          "passed": true,
+          "evidence": "'Glossary: Every term on this page' defines about 35 terms (API, JSON, SQLite, CORS, cascade delete, race condition, SMTP/STARTTLS, environment variable, UTC, GDPR, etc.) in plain language."
+        },
+        {
+          "text": "The explainer contains no em dashes",
+          "passed": true,
+          "evidence": "Python count of U+2014: explainer.html 0, reply.md 0."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "freelance-contract-before-signing",
+      "eval_name": "freelance-contract-before-signing",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 12,
+        "failed": 0,
+        "total": 12,
+        "time_seconds": 370.4,
+        "tokens": 125493,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Walks through the contract section by section in the contract's own order",
+          "passed": true,
+          "evidence": "Explainer section 4 'Clause by clause' has cards 1.1, 1.2, 2.1, 2.2, 3.1-3.4, 4.1, 4.2, 5.1, 6.1, 6.2, 7.1-7.3, 8.1-8.3, 9.1, 10.1, Schedule A, then gaps, in contract order; header states 'Read clause by clause, in the contract's own order.'"
+        },
+        {
+          "text": "Flags the automatic renewal with a 90-day notice deadline",
+          "passed": true,
+          "evidence": "Card 2.2 'Automatic renewal': rolls over 'unless one side says no renewal in writing at least 90 days before the year ends', with a worked deadline ('sign on 1 December 2026 ... notice deadline is 1 September 2027'); also in Risks as Low 'Missed renewal deadline'. Labeled Balanced, but clearly flagged and explained."
+        },
+        {
+          "text": "Flags 60-day payment terms combined with the client's right to withhold disputed invoices",
+          "passed": true,
+          "evidence": "Cards 3.2 ('Northwind has 60 days ... can owe you up to about 3 months of fees: CHF 19,500') and 3.3 ('Tilts to Northwind, strongly ... No time limit ... A small complaint can freeze a whole month's fee'); High risk 'Cash flow and non-payment' says clauses 3.2, 3.3, 8.3 and 7.2 stack."
+        },
+        {
+          "text": "Flags that the IP assignment also takes the Consultant's pre-existing materials and know-how",
+          "passed": true,
+          "evidence": "Card 4.1: 'Owning your methods and know-how is not [normal]'; card 4.2: 'including anything you built before this job ... If you reuse your own workflow templates ... they become Northwind's.' Reply also names 4.1/4.2 taking pre-existing templates and know-how."
+        },
+        {
+          "text": "Flags the 24-month non-compete covering the logistics sector in Switzerland, Germany and Austria",
+          "passed": true,
+          "evidence": "Card 6.1 'Tilts to Northwind, strongly': 'for 24 months after it ends, you may not provide similar services to any logistics company in Switzerland, Germany or Austria'; High risk 'Two years out of DACH logistics'."
+        },
+        {
+          "text": "Flags the asymmetric liability (Client capped at CHF 1,000) and the uncapped indemnity by the Consultant",
+          "passed": true,
+          "evidence": "Card 7.2: 'Your cap is up to CHF 78,000; theirs is CHF 1,000'; card 7.3: '\"All\" claims, with no requirement that you were at fault'; 7.1 notes 'it does not say whether the 7.3 indemnity sits inside this cap'; risk says 'possibly beyond the cap'."
+        },
+        {
+          "text": "Flags the asymmetric termination (14 days vs 90 days) and payment only for accepted services",
+          "passed": true,
+          "evidence": "Cards 8.1 ('a 14-day contract for Northwind'), 8.2 ('you are tied for 3 months, they for 2 weeks') and 8.3 ('pays only for services it has \"accepted\" ... The contract has no acceptance process')."
+        },
+        {
+          "text": "Flags that scope changes up to 15% must be absorbed for free",
+          "passed": true,
+          "evidence": "Card 1.2: 'You do them for free if the change is no bigger than 15% of the \"original estimated effort\" ... the 15% line cannot be measured ... five changes at 14% each could all be free.'"
+        },
+        {
+          "text": "Traces a realistic scenario through the clauses (for example a late or disputed payment)",
+          "passed": true,
+          "evidence": "Section 5 'Follow one real example through': dated timeline Dec 2026 to May 2027 tracing a scope change (1.2), an ERP sync incident and haulier claim (7.3/7.1), disputed invoices withheld (3.3), 14-day exit (8.1), 'not accepted' (8.3), IP retained (4.1/4.2), Zurich suit and CHF 1,000 cap (10.1/7.2), and a refused Munich client (6.1)."
+        },
+        {
+          "text": "Uses analogies and includes a glossary of legal terms",
+          "passed": true,
+          "evidence": "Anchor analogy (builder/homeowner) plus per-clause 'Analogy' boxes (e.g. 1.2, 3.2, 4.1, 6.1, 7.3, 8.3); a Glossary of 40+ terms (Acceptance, Assign, Indemnify, Liability cap, Non-compete, Termination for convenience, etc.), many with analogies."
+        },
+        {
+          "text": "Recommends review by a lawyer for high-stakes points",
+          "passed": true,
+          "evidence": "Reply: 'Clauses 4, 6.1, 7 and 8 are worth a review by a Swiss-law lawyer before you sign'; explainer checklist: 'Has a lawyer who knows Swiss contract law read clauses 4, 6.1, 7 and 8'."
+        },
+        {
+          "text": "The explainer contains no em dashes",
+          "passed": true,
+          "evidence": "Programmatic count of U+2014: explainer.html 0, reply.md 0."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "stripe-hubspot-workflow-for-manager",
+      "eval_name": "stripe-hubspot-workflow-for-manager",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 307.6,
+        "tokens": 134064,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "An HTML page is delivered with a flow diagram of the workflow steps",
+          "passed": true,
+          "evidence": "explainer.html contains an inline SVG 'map' titled 'Seven stations on one line': Front door (Stripe Webhook) -> Sorter -> Discard bin / Labelling station -> Customer file (HubSpot contact) -> Sales ledger (deal), and Noticeboard (Slack), with labelled arrows ('checkouts', 'anything else', 'contact ID') and risk markers. Clickable nodes."
+        },
+        {
+          "text": "Flags that the webhook has no authentication or Stripe signature check, so anyone could send fake payments",
+          "passed": true,
+          "evidence": "Front door card: 'Unlocked door. It accepts deliveries from anyone, with no check that Stripe sent them... this door does not look at the signature'; technical note cites authentication: none and no Stripe-Signature verification. Risk 'High: Anyone can create fake sales'. Scenario C traces a fake 25,000 EUR sale."
+        },
+        {
+          "text": "Flags that customer name, email and amount are posted to the #general Slack channel",
+          "passed": true,
+          "evidence": "Slack card: 'posts in #general ... Each message includes the buyer's full name and email address'; message template shown 'New sale! [name] ([email], [country]) bought [product] for [amount] EUR'. Risk 'High: Customer personal data posted to the whole company' with GDPR note."
+        },
+        {
+          "text": "Flags that a new HubSpot contact is created every time, so repeat customers cause duplicates or failures",
+          "passed": true,
+          "evidence": "Customer file card: 'Always opens a new folder. If the buyer already exists in HubSpot ... HubSpot refuses the duplicate and the station jams', suggests Create or Update. Risk 'High: Repeat customers are lost, silently'; scenario B (Kwame) traces it."
+        },
+        {
+          "text": "Flags missing error handling (no error workflow, failed runs not saved)",
+          "passed": true,
+          "evidence": "Map footer 'If any station fails: the run stops, no record is kept, nobody is told'; decisions table 'Failures are not saved and nobody is alerted'; glossary 'Error workflow / saving failed runs ... Both are switched off here.'"
+        },
+        {
+          "text": "Notes that refunds and other Stripe events are ignored",
+          "passed": true,
+          "evidence": "Discard bin card: 'Refunds, failed payments and subscription renewals end here'; 'Missing: Refunds, subscription renewals and invoice payments are ignored'; Medium risk 'Revenue in HubSpot stays too high after refunds'."
+        },
+        {
+          "text": "Traces one example payment step by step through the workflow",
+          "passed": true,
+          "evidence": "'Follow one real example through' section with scenario A: Lucia Fernandez buys Team Focus Workshop for 149 EUR, traced through all 7 stations (14900 cents /100, contact, deal, Slack text), plus scenarios B and C."
+        },
+        {
+          "text": "Explains the workflow with one consistent everyday analogy",
+          "passed": true,
+          "evidence": "Single assembly-line / back-office analogy introduced up front ('small unattended assembly line in a back office') and kept throughout: front door, sorter, labelling station, customer file, sales ledger, noticeboard, keycard; each card has an 'Analogy' line and 'where the analogy breaks' note; glossary maps terms to it."
+        },
+        {
+          "text": "Includes a glossary of terms like webhook, deal, node",
+          "passed": true,
+          "evidence": "'Glossary: Every term on this page' with ~28 entries including Webhook, Node (station), Deal, Contact, Pipeline, Credential, Upsert, GDPR."
+        },
+        {
+          "text": "The explainer contains no em dashes",
+          "passed": true,
+          "evidence": "Programmatic count of U+2014: explainer.html = 0, reply.md = 0."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "booking-app-before-deploy",
+      "eval_name": "booking-app-before-deploy",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.4,
+        "passed": 4,
+        "failed": 6,
+        "total": 10,
+        "time_seconds": 97.5,
+        "tokens": 99966,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "An HTML page is delivered with a diagram (SVG or equivalent) showing the app's main parts and how they connect",
+          "passed": false,
+          "evidence": "No explainer.html or any HTML page in outputs/. Only reply.md exists, with no diagram."
+        },
+        {
+          "text": "Identifies that the email service password (SendGrid key) is written directly in config.py",
+          "passed": true,
+          "evidence": "Must-fix #2: 'A live email key is in the code (config.py, line 9, marked # TODO move to env)'. It also says to rotate the SendGrid key."
+        },
+        {
+          "text": "Identifies that the admin endpoints have no login and expose every patient's details",
+          "passed": true,
+          "evidence": "Must-fix #1: 'GET /admin/bookings hands every booking, with patient details and the free-text reason, to anyone who knows the address', tested with no password."
+        },
+        {
+          "text": "Identifies that anyone can cancel any booking just by knowing or guessing its number",
+          "passed": true,
+          "evidence": "Must-fix #3: 'Booking IDs are just 1, 2, 3... and POST /bookings/1/cancel needs no proof that you own booking 1. I cancelled one with no credentials.'"
+        },
+        {
+          "text": "Notes that cancelled bookings still block their time slot",
+          "passed": true,
+          "evidence": "Bugs: 'A cancelled slot can never be rebooked. The free-slot check doesn't ignore cancelled bookings... rebooking a cancelled slot returned \"Slot already taken\".'"
+        },
+        {
+          "text": "Explains the app with one consistent everyday analogy mapped onto several parts",
+          "passed": false,
+          "evidence": "There is no analogy. The 'What it does' section gives a plain functional list (opening hours, booking, cancelling, admin)."
+        },
+        {
+          "text": "Traces one concrete booking step by step through the parts",
+          "passed": false,
+          "evidence": "No step-by-step trace of one booking through the parts. Step 2 of 'What it does' summarizes the booking in one sentence, and the test results are scattered findings rather than a walk through each component."
+        },
+        {
+          "text": "Lists at least 3 decisions made for the user (e.g. SQLite, SendGrid email, 30-minute slots, UTC time, open CORS)",
+          "passed": false,
+          "evidence": "SQLite, SendGrid, 30-minute slots, UTC and open CORS all show up, but as facts or risks. Nothing is presented as a decision made for the user with an alternative. The strict reading of 'lists decisions made for the user' is not met."
+        },
+        {
+          "text": "Includes a glossary that explains the technical terms used",
+          "passed": false,
+          "evidence": "No glossary. A few terms get inline glosses (e.g. 'FastAPI, which is a Python framework'), but CORS, SQLite, SMTP, GDPR and others go undefined."
+        },
+        {
+          "text": "The explainer contains no em dashes",
+          "passed": false,
+          "evidence": "No explainer was produced, so the assertion is not met. Note: reply.md has 0 U+2014 characters (checked programmatically), so the only text delivered does follow the style rule."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "freelance-contract-before-signing",
+      "eval_name": "freelance-contract-before-signing",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 9,
+        "failed": 3,
+        "total": 12,
+        "time_seconds": 153.3,
+        "tokens": 105171,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Walks through the contract section by section in the contract's own order",
+          "passed": false,
+          "evidence": "Explainer 'Clause by clause' is ordered by severity, not contract order: 4.1/4.2, 6.1, 3.2/3.3, 8.1-8.3, 7.1-7.3, 2.2, 1.2, gaps, 9.1, then grouped 'standard parts' 3.4/5.1/6.2/10.1. Reply likewise starts with 4, 6.1, 3. 5.1, 6.2 and others get no individual walkthrough."
+        },
+        {
+          "text": "Flags the automatic renewal with a 90-day notice deadline",
+          "passed": true,
+          "evidence": "Auto-renewal card 2.2: 'Renews for another 12 months unless notice is given 90 days before the term ends ... Miss the 90-day window and you are in for another year'. Reply also covers it."
+        },
+        {
+          "text": "Flags 60-day payment terms combined with the client's right to withhold disputed invoices",
+          "passed": true,
+          "evidence": "Payment card 3.2/3.3: 'paid 60 days after receipt of a \"correct\" invoice. Client may withhold any invoice in whole or part while a good-faith dispute is open ... A small disagreement can freeze a whole invoice with no time limit.'"
+        },
+        {
+          "text": "Flags that the IP assignment also takes the Consultant's pre-existing materials and know-how",
+          "passed": true,
+          "evidence": "IP card: 'Northwind owns all work product \"upon creation\", including your methods and know-how, plus any of your pre-existing materials used in a deliverable.'"
+        },
+        {
+          "text": "Flags the 24-month non-compete covering the logistics sector in Switzerland, Germany and Austria",
+          "passed": true,
+          "evidence": "Non-compete card 6.1: 'During the term and for 24 months after, no services similar to these for any logistics company in Switzerland, Germany or Austria.'"
+        },
+        {
+          "text": "Flags the asymmetric liability (Client capped at CHF 1,000) and the uncapped indemnity by the Consultant",
+          "passed": true,
+          "evidence": "Liability card: 'Your cap is the fees paid in the prior 12 months. Theirs is CHF 1,000. You indemnify them against all third-party claims ... The indemnity has no fault requirement and is not clearly inside your cap.' Reply: 'with no link to your fault and no clear cap'."
+        },
+        {
+          "text": "Flags the asymmetric termination (14 days vs 90 days) and payment only for accepted services",
+          "passed": true,
+          "evidence": "Termination card 8.1-8.3: 'Client can exit on 14 days' notice. You need 90. On exit, Client pays only for Services it \"accepted\" ... \"Accepted\" is never defined.'"
+        },
+        {
+          "text": "Flags that scope changes up to 15% must be absorbed for free",
+          "passed": true,
+          "evidence": "Scope card: 'Changes up to 15% of \"original estimated effort\" are free ... No effort estimate exists'. Reply 'Free change requests (1.2)'."
+        },
+        {
+          "text": "Traces a realistic scenario through the clauses (for example a late or disputed payment)",
+          "passed": false,
+          "evidence": "No narrative scenario traced through the clauses. The closest is a cash-flow timeline for 60-day arrears with one sentence linking it to 14-day exit and 'not accepted' work, and a one-line hypothetical about bad data in the liability card. These are illustrations of single clauses, not a scenario followed step by step across the contract."
+        },
+        {
+          "text": "Uses analogies and includes a glossary of legal terms",
+          "passed": false,
+          "evidence": "No glossary anywhere in explainer or reply, and no analogies; legal terms (indemnify, in arrears, assign, licence) are used without definitions."
+        },
+        {
+          "text": "Recommends review by a lawyer for high-stakes points",
+          "passed": true,
+          "evidence": "Reply: 'a one-hour review by a Zurich contracts lawyer is cheap insurance'; explainer: 'a one-hour review by a Zurich contracts lawyer is worth the fee.'"
+        },
+        {
+          "text": "The explainer contains no em dashes",
+          "passed": true,
+          "evidence": "Programmatic count of U+2014: explainer.html 0, reply.md 0."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "stripe-hubspot-workflow-for-manager",
+      "eval_name": "stripe-hubspot-workflow-for-manager",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 6,
+        "failed": 4,
+        "total": 10,
+        "time_seconds": 96.3,
+        "tokens": 98182,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "An HTML page is delivered with a flow diagram of the workflow steps",
+          "passed": false,
+          "evidence": "explainer.html has 'What happens when a customer pays': six numbered cards in a CSS auto-fit grid (.flow/.step divs). No arrows, connectors, branches or SVG; it is a numbered list styled as cards, not a flow diagram. The 'Ignore other events' branch and the parallel Slack path are not drawn. Strictly, not a flow diagram."
+        },
+        {
+          "text": "Flags that the webhook has no authentication or Stripe signature check, so anyone could send fake payments",
+          "passed": true,
+          "evidence": "'Safety: Anyone could create fake sales ... has no security check ... Fix: verify Stripe's digital signature'. reply.md cites authentication: none."
+        },
+        {
+          "text": "Flags that customer name, email and amount are posted to the #general Slack channel",
+          "passed": true,
+          "evidence": "'Privacy: Customer details posted to the whole company. Each sale posts the customer's full name, email address and country to #general'; step 6 shows the message includes the amount ('bought Product for X EUR')."
+        },
+        {
+          "text": "Flags that a new HubSpot contact is created every time, so repeat customers cause duplicates or failures",
+          "passed": true,
+          "evidence": "'Reliability: Repeat customers would be lost. The workflow always tries to create a new HubSpot contact. HubSpot refuses when the email already exists, and the deal never gets created.'"
+        },
+        {
+          "text": "Flags missing error handling (no error workflow, failed runs not saved)",
+          "passed": true,
+          "evidence": "'Failures go unnoticed: When a step fails, nothing is logged and nobody gets told'; reply.md: 'Error logging is off (saveDataErrorExecution: none) and no error workflow is set up.'"
+        },
+        {
+          "text": "Notes that refunds and other Stripe events are ignored",
+          "passed": true,
+          "evidence": "Step 2 'Every other kind of Stripe message is ignored'; Smaller points 'Refunds are not handled. A refunded sale stays Closed won in HubSpot.'"
+        },
+        {
+          "text": "Traces one example payment step by step through the workflow",
+          "passed": false,
+          "evidence": "No single example payment is traced through the steps. The flow uses generic placeholders ('Name bought Product for X EUR'); the 'three test payments' section lists expected outcomes of proposed tests, not a step-by-step trace."
+        },
+        {
+          "text": "Explains the workflow with one consistent everyday analogy",
+          "passed": false,
+          "evidence": "No everyday analogy anywhere in the explainer or reply; explanation is in plain but literal terms."
+        },
+        {
+          "text": "Includes a glossary of terms like webhook, deal, node",
+          "passed": false,
+          "evidence": "No glossary. Terms such as webhook, node and deal are not defined in a glossary section (the word 'node' does not appear in the explainer)."
+        },
+        {
+          "text": "The explainer contains no em dashes",
+          "passed": true,
+          "evidence": "Programmatic count of U+2014: explainer.html = 0, reply.md = 0."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 393.5667,
+        "stddev": 99.5918,
+        "min": 307.6,
+        "max": 502.7
+      },
+      "tokens": {
+        "mean": 136385.3333,
+        "stddev": 12219.5029,
+        "min": 125493,
+        "max": 149599
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.5833,
+        "stddev": 0.1756,
+        "min": 0.4,
+        "max": 0.75
+      },
+      "time_seconds": {
+        "mean": 115.7,
+        "stddev": 32.5681,
+        "min": 96.3,
+        "max": 153.3
+      },
+      "tokens": {
+        "mean": 101106.3333,
+        "stddev": 3631.3634,
+        "min": 98182,
+        "max": 105171
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.42",
+      "time_seconds": "+277.9",
+      "tokens": "+35279"
+    }
+  },
+  "notes": [
+    "All risk-finding assertions pass in both configurations: the baseline finds the same problems. The skill's gain is entirely in structure (diagram, analogy, traced example, decisions, glossary).",
+    "Baseline was stronger on a clear verdict and concrete counter-asks (workflow: 'approve the plan, not this version'; contract: redline list). The skill has no instruction to give a go/no-go answer.",
+    "Skill runs take about 3.4x longer (394s vs 116s) and 35% more tokens. Pages are 50-60 KB vs 9-17 KB.",
+    "Both configurations pulled the user's personal memory into fictional test material. The skill should only use personal context the user brings up.",
+    "Contract with_skill rated auto-renewal low risk; defensible but worth a human look."
+  ]
+}

@@ -23,3 +23,9 @@ Small pieces of work get a short answer in the chat instead, with an analogy and
 ### How to use it
 
 Download the `ai-explain-me` folder and add it as a skill in Claude, or copy it into `~/.claude/skills/` if you use Claude Code. Then ask Claude to explain something an AI built for you ("walk me through what the agent built", "help me understand this contract before I sign"). When Claude writes something large itself, it will offer to explain it.
+
+### Tests and benchmarks
+
+The `evals` folder has three test cases: a clinic booking app, an n8n workflow that sends Stripe payments to HubSpot and Slack, and a freelance services contract. Each one lists the checks a good result should pass. The sample app contains deliberate security problems for the skill to find (the email key in it is fake), so don't deploy it.
+
+The `benchmarks` folder has the results of running each test with and without the skill. In the first run the skill passed 32 of 32 checks, against 19 of 32 without it. See [benchmarks/iteration-1.md](ai-explain-me/benchmarks/iteration-1.md) for what that means.
