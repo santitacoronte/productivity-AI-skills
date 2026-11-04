@@ -24,8 +24,8 @@ Tested anchor analogies for common kinds of AI-built work. Pick one anchor per e
 | Back end / server | Kitchen | One kitchen can serve thousands of tables at once |
 | API | Waiter carrying orders | The waiter forgets you after each trip (stateless) |
 | Database | Pantry and fridge | Nothing spoils, but nothing is thrown away unless someone decides to |
-| Authentication | Host checking the reservation list | — |
-| Authorization | Which rooms a guest may enter | — |
+| Authentication | Host checking the reservation list | Holds well |
+| Authorization | Which rooms a guest may enter | Holds well |
 | Cache | Dishes kept warm under the heat lamp | Warm dishes can be out of date |
 | Payments | Cashier using an outside card machine | The restaurant never holds the card itself (if done right) |
 | Logs | Kitchen order tickets kept in a drawer | They can contain private details if careless |
