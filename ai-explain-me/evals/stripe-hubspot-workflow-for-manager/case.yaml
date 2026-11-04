@@ -1,6 +1,0 @@
-schema_version: "1.1"
-name: stripe-hubspot-workflow-for-manager
-expected_outcome: |
-  A graphic explainer page a non-technical manager can follow, with a flow diagram, analogies, one payment traced through, the decisions made, the real risks in this workflow, and a glossary.
-context:
-  scaffold_script: place-files.sh

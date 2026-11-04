@@ -1,6 +1,0 @@
-schema_version: "1.1"
-name: booking-app-before-deploy
-expected_outcome: |
-  A graphic explainer page with a diagram of the app's parts, plain-language explanations with analogies, a traced booking example, the decisions made for the user, the real security and privacy risks in the code, and a glossary.
-context:
-  scaffold_script: place-files.sh
