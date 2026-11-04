@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: freelance-contract-before-signing
+expected_outcome: |
+  A document explainer that walks through the contract clause by clause in plain language with analogies, traces a realistic scenario, surfaces the one-sided terms and risks for the Consultant, and includes a glossary.
+context:
+  scaffold_script: place-files.sh

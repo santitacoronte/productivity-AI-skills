@@ -1,0 +1,90 @@
+{
+  "name": "Stripe payment to HubSpot + Slack",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Stripe Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": { "httpMethod": "POST", "path": "stripe-events", "authentication": "none", "responseMode": "onReceived" },
+      "position": [200, 300]
+    },
+    {
+      "id": "2",
+      "name": "Only successful payments",
+      "type": "n8n-nodes-base.if",
+      "parameters": {
+        "conditions": { "string": [ { "value1": "={{$json.body.type}}", "operation": "equal", "value2": "checkout.session.completed" } ] }
+      },
+      "position": [420, 300]
+    },
+    {
+      "id": "3",
+      "name": "Map fields",
+      "type": "n8n-nodes-base.set",
+      "parameters": {
+        "values": {
+          "string": [
+            { "name": "email", "value": "={{$json.body.data.object.customer_details.email}}" },
+            { "name": "name", "value": "={{$json.body.data.object.customer_details.name}}" },
+            { "name": "country", "value": "={{$json.body.data.object.customer_details.address.country}}" },
+            { "name": "product", "value": "={{$json.body.data.object.metadata.product_name}}" }
+          ],
+          "number": [ { "name": "amount", "value": "={{$json.body.data.object.amount_total / 100}}" } ]
+        }
+      },
+      "position": [640, 300]
+    },
+    {
+      "id": "4",
+      "name": "HubSpot: Create contact",
+      "type": "n8n-nodes-base.hubspot",
+      "parameters": {
+        "resource": "contact",
+        "operation": "create",
+        "email": "={{$json.email}}",
+        "additionalFields": { "firstName": "={{$json.name}}", "country": "={{$json.country}}", "lifecycleStage": "customer" }
+      },
+      "credentials": { "hubspotAppToken": { "id": "7", "name": "HubSpot Private App (full access)" } },
+      "position": [860, 220]
+    },
+    {
+      "id": "5",
+      "name": "HubSpot: Create deal",
+      "type": "n8n-nodes-base.hubspot",
+      "parameters": {
+        "resource": "deal",
+        "operation": "create",
+        "stage": "closedwon",
+        "additionalFields": { "dealName": "={{$json.product}} - {{$json.email}}", "amount": "={{$json.amount}}", "associatedVids": "={{$node['HubSpot: Create contact'].json.vid}}" }
+      },
+      "credentials": { "hubspotAppToken": { "id": "7", "name": "HubSpot Private App (full access)" } },
+      "position": [1080, 220]
+    },
+    {
+      "id": "6",
+      "name": "Slack: Notify sales",
+      "type": "n8n-nodes-base.slack",
+      "parameters": {
+        "channel": "#general",
+        "text": "=:moneybag: New sale! {{$json.name}} ({{$json.email}}, {{$json.country}}) bought {{$json.product}} for {{$json.amount}} EUR"
+      },
+      "credentials": { "slackApi": { "id": "3", "name": "Slack bot" } },
+      "position": [860, 400]
+    },
+    {
+      "id": "7",
+      "name": "Ignore other events",
+      "type": "n8n-nodes-base.noOp",
+      "parameters": {},
+      "position": [640, 480]
+    }
+  ],
+  "connections": {
+    "Stripe Webhook": { "main": [ [ { "node": "Only successful payments", "type": "main", "index": 0 } ] ] },
+    "Only successful payments": { "main": [ [ { "node": "Map fields", "type": "main", "index": 0 } ], [ { "node": "Ignore other events", "type": "main", "index": 0 } ] ] },
+    "Map fields": { "main": [ [ { "node": "HubSpot: Create contact", "type": "main", "index": 0 }, { "node": "Slack: Notify sales", "type": "main", "index": 0 } ] ] },
+    "HubSpot: Create contact": { "main": [ [ { "node": "HubSpot: Create deal", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "executionOrder": "v1", "saveDataErrorExecution": "none", "errorWorkflow": "" },
+  "active": false
+}
