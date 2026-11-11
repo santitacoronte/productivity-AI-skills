@@ -2,6 +2,29 @@
 
 Claude skills I build and use in my own work. Each folder is one skill: a `SKILL.md` file with the instructions Claude follows, plus any reference files it needs.
 
+## check-before-use
+
+### Why it exists
+
+AI writes with the same confidence whether it is right or wrong. A memo can quote a number nobody can trace, get a sum wrong, or say one thing in the first paragraph and the opposite in the third, and still read like a finished piece of work. This skill checks a text before you send it, forward it or act on it.
+
+### What it does
+
+Paste or attach the text and say "check this". Claude runs four checks and never rewrites your text:
+
+1. **Facts and numbers.** Every fact and number, each with a source you can open, or "no source". It never invents a source.
+2. **Math.** Every calculation redone, marked correct or wrong.
+3. **Contradictions.** Any two lines that disagree, quoted side by side.
+4. **Weak spot.** What would make the main conclusion wrong.
+
+It ends with one line, "Fix before sending:", listing what to fix.
+
+### How to install it
+
+In Claude: download [check-before-use.zip](https://github.com/santitacoronte/productivity-AI-skills/releases/latest/download/check-before-use.zip), then open Settings, Capabilities, Skills and upload the zip. In Claude Code, copy the `check-before-use` folder into `~/.claude/skills/`.
+
+If your AI doesn't support skills, [check-prompt.md](check-before-use/check-prompt.md) has the same four checks as a prompt, and how to put it on one shortcut with Raycast or Text Blaze.
+
 ## ai-explain-me
 
 ### Why it exists
