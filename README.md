@@ -21,7 +21,7 @@ It ends with one line, "Fix before sending:", listing what to fix.
 
 ### How to install it
 
-In Claude: download [check-before-use.zip](https://github.com/santitacoronte/productivity-AI-skills/releases/latest/download/check-before-use.zip), then open Settings, Capabilities, Skills and upload the zip. In Claude Code, copy the `check-before-use` folder into `~/.claude/skills/`.
+In Claude: download [check-before-use.zip](https://github.com/santitacoronte/productivity-AI-skills/releases/download/check-before-use-v1/check-before-use.zip), then open Settings, Capabilities, Skills and upload the zip. In Claude Code, copy the `check-before-use` folder into `~/.claude/skills/`.
 
 If your AI doesn't support skills, [check-prompt.md](check-before-use/check-prompt.md) has the same four checks as a prompt, and how to put it on one shortcut with Raycast or Text Blaze.
 
