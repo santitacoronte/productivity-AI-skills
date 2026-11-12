@@ -2,6 +2,39 @@
 
 Claude skills I build and use in my own work. Each folder is one skill: a `SKILL.md` file with the instructions Claude follows, plus any reference files it needs.
 
+## task-idea-priority-score
+
+### Why it exists
+
+Six things on your list, two free hours. Which one is worth your time? Usually we pick by gut feeling, or by whoever asked last. This skill gives every task, project or idea a priority score from 0 to 100, built from the numbers you have and from what you say matters to you.
+
+### What it does
+
+The first time, it asks you how important eight things are when you choose what to work on, from 0 to 10, plus what a big yearly result, a big spend and an hour of your time are worth to you. A freelancer and a team lead answer differently, and the scores fit both.
+
+Then, for each task or idea, it uses any numbers you give it (hours, budgets, deadlines) and asks only for what's missing:
+
+| Category | The question for each task |
+|---|---|
+| Money | How much money can you make in a year? |
+| Cost | How much will it cost? |
+| Optional | How optional is this? If you walked away from this tomorrow, would something break? |
+| Important to you | How important is it to you? |
+| Urgent | Is it urgent? How soon do you need to start? |
+| Time | How much time will it take to complete? |
+| Impact | Who would notice the result? |
+| Career boost | What does it do for your career? |
+
+Cost and time lower the score; the others raise it. The questions come from two free tools: [The One Thing](https://play.google.com/store/apps/details?id=com.santiagoideapp.theonething) app and the [3D Prioritization Map](https://santiagotacoronte.com/productivity-tips/3d-prioritization/).
+
+A small script does the sums, so the same answers always give the same score. You get a ranked table with each score, how sure it is, and what pushed each task up or pulled it down. Every number is marked as your answer, data with its source, or an estimate. The skill ranks. You decide.
+
+### How to install it
+
+In Claude: download [task-idea-priority-score.zip](https://github.com/santitacoronte/productivity-AI-skills/releases/download/task-idea-priority-score-v1/task-idea-priority-score.zip), then open Settings, Capabilities, Skills and upload the zip. Say "score my tasks" and paste your list. Claude.ai can't save files inside a skill, so after the first setup it gives you a short settings block to paste into your Project instructions.
+
+In Claude Code, copy the `task-idea-priority-score` folder into `~/.claude/skills/`. Your answers are saved in `settings.json` in that folder. Say "change my weights" to redo the setup.
+
 ## check-before-use
 
 ### Why it exists
