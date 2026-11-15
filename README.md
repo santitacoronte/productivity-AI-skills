@@ -2,6 +2,39 @@
 
 Claude skills I build and use in my own work. Each folder is one skill: a `SKILL.md` file with the instructions Claude follows, plus any reference files it needs.
 
+## deck-doctor
+
+### Why it exists
+
+Every team has seen this deck: background, context, methodology, a market overview, and on the last slide, "Next steps: let's discuss". Everyone leaves informed, and nobody decides. The meeting books another meeting. This skill takes your deck and helps you turn it into one that gets a decision.
+
+Want to see the problem first? [Deck Doctor](https://santiagotacoronte.com/productivity-tips/bad-presentation-examples/) is a free game with a sick 11-slide deck and the same six mistakes.
+
+### What it does
+
+Share your deck as a .pptx, a PDF, an outline or pasted slide text, and say "fix my deck". Claude checks it slide by slide for the six mistakes that stop a deck from getting a decision:
+
+| Mistake | What it looks like |
+|---|---|
+| No decision asked | The deck ends on "let's discuss" or "questions?" |
+| No recommendation | The conclusions never say what to do |
+| No owner and no date | Nobody owns the decision, and no date says when it's needed |
+| Key facts hidden | The facts that decide it sit deep in the deck, in small print |
+| Irrelevant information | Slides that don't help pick between the options |
+| Option missing | No "do nothing" or "keep what we have" option |
+
+You get a table with the slide that shows each mistake and a score ("4 of 6 mistakes found"). A deck that already works gets a low score and a short note on what to keep.
+
+Then it asks you two things only you know: which facts change the choice, and what you recommend, who owns the decision and by when. It never picks the recommendation for you. If you say "you decide", it lays the options side by side and asks again.
+
+Last, it writes the four-slide decision deck: the decision, the options with doing nothing, the facts, and your recommendation with an owner and a date. Everything else goes to an appendix list. Any number that isn't in your deck or your answers gets "(check)". Ask for a .pptx and you get the four slides as a plain file.
+
+### How to install it
+
+In Claude: download [deck-doctor.zip](https://github.com/santitacoronte/productivity-AI-skills/releases/download/deck-doctor-v1/deck-doctor.zip), then open Settings, Capabilities, Skills and upload the zip. Say "fix my deck" and share your slides.
+
+In Claude Code, copy the `deck-doctor` folder into `~/.claude/skills/`. To read a .pptx it uses python-pptx (`pip install python-pptx`).
+
 ## task-idea-priority-score
 
 ### Why it exists
